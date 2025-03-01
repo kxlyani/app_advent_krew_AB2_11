@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:relieflink/screens/home_page.dart';
+import 'package:relieflink/login/loginscreen.dart';
+// import 'package:relieflink/screens/home_page.dart';
 
 void main() {
   runApp(const CrisisAssistApp());
@@ -42,7 +43,7 @@ class CrisisAssistApp extends StatelessWidget {
           ),
         ),
       ),
-      home: const HomePage(),
+      home: const LoginScreen(),
     );
   }
 }
