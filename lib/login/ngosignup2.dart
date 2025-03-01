@@ -6,7 +6,7 @@ import 'package:relieflink/login/loginscreen.dart';
 import 'package:relieflink/login/signupscreen2.dart';
 import 'package:relieflink/login/successscreen.dart';
 import 'package:relieflink/models/users.dart';
-// import 'package:relieflink/shared_preferences.dart';
+import 'package:relieflink/shared_preferences.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
 import 'package:http/http.dart' as http;
@@ -59,8 +59,8 @@ class _NGOSignUpScreenState extends State<NGOSignUpScreen2> {
     bool isOtpValid = await verifyEmailOTP(_enteredEmail, _otp);
     if (isOtpValid) {
       isSigningIn = true;
-      // await saveIDStatus(_enteredEmail);
-      // universalId = _enteredEmail;
+      await saveIDStatus(_enteredEmail);
+      universalId = _enteredEmail;
       addNGO(ngo);
       Navigator.of(context).push(
         MaterialPageRoute(

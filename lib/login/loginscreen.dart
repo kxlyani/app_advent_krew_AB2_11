@@ -7,7 +7,7 @@ import 'package:relieflink/login/loginscreen2.dart';
 import 'package:relieflink/login/signupscreen.dart';
 
 import 'package:http/http.dart' as http;
-//import 'package:relieflink/shared_preferences.dart';
+import 'package:relieflink/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -51,10 +51,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (shouldSend == true) {
       if (_enteredEmail == '@admin') {
-        // await saveAdminStatus(true);
-        // adminLog = true;
-        // await saveIDStatus(_enteredEmail);
-        // universalId = _enteredEmail;
+        await saveAdminStatus(true);
+        adminLog = true;
+        await saveIDStatus(_enteredEmail);
+        universalId = _enteredEmail;
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
@@ -65,11 +65,11 @@ class _LoginScreenState extends State<LoginScreen> {
         );
       }
       if (_enteredEmail == '@volunteer') {
-        // await saveAdminStatus(true);
-        // adminLog = true;
-        // await saveIDStatus(_enteredEmail);
-        // universalId = _enteredEmail;
-        // print(_enteredEmail);
+        await saveAdminStatus(true);
+        adminLog = true;
+        await saveIDStatus(_enteredEmail);
+        universalId = _enteredEmail;
+        print(_enteredEmail);
         // print(universalId);
         Navigator.pushAndRemoveUntil(
           context,
@@ -141,7 +141,7 @@ class _LoginScreenState extends State<LoginScreen> {
             if (user['email'] != null &&
                 user['email'].toString().trim().toLowerCase() ==
                     email.trim().toLowerCase()) {
-              print('Email found in alumni.json ✅');
+              print('Email found in ngos.json ✅');
               emailFound = true;
             }
           }
@@ -165,7 +165,7 @@ class _LoginScreenState extends State<LoginScreen> {
     EmailOTP.config(
       appName: 'Relief Link',
       otpType: OTPType.numeric,
-      expiry: 60000,
+      expiry: 600000,
       emailTheme: EmailTheme.v6,
       appEmail: 'support@relieflink.com',
       otpLength: 4,

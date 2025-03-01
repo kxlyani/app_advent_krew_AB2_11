@@ -1,5 +1,7 @@
 // Profile Screen - User profile and settings
 import 'package:flutter/material.dart';
+import 'package:relieflink/login/loginscreen.dart';
+import 'package:relieflink/shared_preferences.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -201,9 +203,40 @@ class ProfileScreen extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 child: OutlinedButton(
-                  onPressed: () {
-                    // Logout
-                  },
+                  onPressed: () async {
+                          bool shouldExit = await showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: const Text("Log Out?"),
+                              content: const Text(
+                                  "You will be signed out of the application. Do you really want to log out?"),
+                              actions: [
+                                TextButton(
+                                  onPressed: () =>
+                                      Navigator.of(context).pop(false),
+                                  child: const Text("No"),
+                                ),
+                                TextButton(
+                                  onPressed: () =>
+                                      Navigator.of(context).pop(true),
+                                  child: const Text("Yes"),
+                                ),
+                              ],
+                            ),
+                          );
+
+                          if (shouldExit == true) {
+                            await saveLoginStatus(false);
+                            logStatus = false;
+                            print('The logstatus is $logStatus');
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const LoginScreen()),
+                              (route) => false,
+                            );
+                          }
+                        },
                   style: OutlinedButton.styleFrom(
                     side: const BorderSide(color: Colors.red),
                     foregroundColor: Colors.red,

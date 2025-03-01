@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:relieflink/login/signupscreen2.dart';
-// import 'package:relieflink/main.dart';
 import 'package:relieflink/screens/home_page.dart';
-// import 'package:relieflink/shared_preferences.dart';
+import 'package:relieflink/shared_preferences.dart';
 
 class SuccessScreen extends StatefulWidget {
   const SuccessScreen({super.key});
@@ -16,16 +15,16 @@ class _SuccessScreenState extends State<SuccessScreen> {
   void initState() {
     super.initState();
     Future.delayed(const Duration(seconds: 3), () async {
-      // await saveLoginStatus(true);
-      // logStatus = true;
-      // print('The logstatus is $logStatus');
+      await saveLoginStatus(true);
+      logStatus = true;
+      print('The logstatus is $logStatus');
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (context) => const HomePage()),
         (route) => false,
       );
     });
-  }
+  } 
 
   @override
   Widget build(BuildContext context) {

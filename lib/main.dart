@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:relieflink/admin/adminpage.dart';
 import 'package:relieflink/login/loginscreen.dart';
-// import 'package:relieflink/screens/home_page.dart';
+import 'package:relieflink/screens/home_page.dart';
+import 'package:relieflink/shared_preferences.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await loadAdminStatus();
+  await loadLoginStatus();
+  await loadIDStatus();
   runApp(const CrisisAssistApp());
 }
 
@@ -43,7 +50,17 @@ class CrisisAssistApp extends StatelessWidget {
           ),
         ),
       ),
-      home: const LoginScreen(),
+      home: setInitialScreen(),
     );
   }
+}
+
+Widget setInitialScreen() {
+  print("Login Status: $logStatus");
+  print("Admin Status: $adminLog");
+
+  if (adminLog) {
+    return AdminPage(adminType: universalId,);
+  }
+  return logStatus ? const HomePage() : const LoginScreen();
 }
