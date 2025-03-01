@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "1040022296138",
+    "firebase_url": "https://relieflink-e824d-default-rtdb.firebaseio.com",
+    "project_id": "relieflink-e824d",
+    "storage_bucket": "relieflink-e824d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1040022296138:android:576285c1ddc0d5ca5438b3",
+        "android_client_info": {
+          "package_name": "com.kxlyani.relieflink"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBTOCpgECVsc3CvIecrL738caBKmS3UiT8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
