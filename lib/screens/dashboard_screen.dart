@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:relieflink/models/crisis_update_card.dart';
+import 'package:relieflink/screens/maps_screen.dart';
 
-// Base Crisis Class
 abstract class Crisis {
   final String title;
   final String description;
@@ -19,7 +19,6 @@ abstract class Crisis {
   });
 }
 
-// Natural Disaster Class
 class NaturalDisaster extends Crisis {
   final String disasterType;
 
@@ -37,56 +36,6 @@ class NaturalDisaster extends Crisis {
       title: json['name'] ?? 'No Title',
       description: json['description'] ?? 'No Description Available',
       disasterType: json['type']?[0]['name'] ?? 'Unknown',
-      country: json['country']?[0]['name'] ?? 'Unknown Location',
-      date: json['date']?['created'] ?? 'Date Unknown',
-      criticalLevel: 'High', // Placeholder
-    );
-  }
-}
-
-// Humanitarian Conflict Class
-class HumanitarianConflict extends Crisis {
-  final String conflictType;
-
-  HumanitarianConflict({
-    required super.title,
-    required super.description,
-    required this.conflictType,
-    required super.country,
-    required super.date,
-    required super.criticalLevel,
-  });
-
-  factory HumanitarianConflict.fromJson(Map<String, dynamic> json) {
-    return HumanitarianConflict(
-      title: json['title'] ?? 'No Title',
-      description: json['summary'] ?? 'No Description Available',
-      conflictType: json['primary_type'] ?? 'Unknown',
-      country: json['country']?[0]['name'] ?? 'Unknown Location',
-      date: json['date']?['created'] ?? 'Date Unknown',
-      criticalLevel: 'Medium',
-    );
-  }
-}
-
-// Pandemic Class
-class Pandemic extends Crisis {
-  final String disease;
-
-  Pandemic({
-    required super.title,
-    required super.description,
-    required this.disease,
-    required super.country,
-    required super.date,
-    required super.criticalLevel,
-  });
-
-  factory Pandemic.fromJson(Map<String, dynamic> json) {
-    return Pandemic(
-      title: json['title'] ?? 'No Title',
-      description: json['summary'] ?? 'No Description Available',
-      disease: json['disease'] ?? 'Unknown Disease',
       country: json['country']?[0]['name'] ?? 'Unknown Location',
       date: json['date']?['created'] ?? 'Date Unknown',
       criticalLevel: 'High',
@@ -132,10 +81,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
         crises = data.map((e) {
           if (selectedCategory == "natural_disaster") {
             return NaturalDisaster.fromJson(e['fields']);
-          } else if (selectedCategory == "humanitarian_conflict") {
-            return HumanitarianConflict.fromJson(e['fields']);
           } else {
-            return Pandemic.fromJson(e['fields']);
+            return NaturalDisaster.fromJson(e['fields']);
           }
         }).toList();
         isLoading = false;
@@ -155,23 +102,34 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text('Crisis Dashboard')),
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text('Urgent Crises',
-                  style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 16.0),
-              Container(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Text(
+                'Urgent Crises',
+                style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Container(
                 height: 200.0,
                 decoration: BoxDecoration(
                   color: Colors.grey[200],
                   borderRadius: BorderRadius.circular(12.0),
                 ),
-                child: const Center(child: Text('Interactive Crisis Map')),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12.0),
+                  child: DisasterMapScreen(),
+                ),
               ),
-              DropdownButton<String>(
+            ),
+            const SizedBox(height: 16.0),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: DropdownButton<String>(
                 value: selectedCategory,
                 items: const [
                   DropdownMenuItem(value: "natural_disaster", child: Text("Natural Disaster")),
@@ -182,25 +140,36 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   if (newValue != null) {
                     setState(() {
                       selectedCategory = newValue;
+                      isLoading = true;
                       fetchCrisisData();
                     });
                   }
                 },
               ),
-              if (isLoading) const Center(child: CircularProgressIndicator())
-              else if (isError) const Center(child: Text('Failed to load crisis updates.'))
-              else Column(
-                children: crises.map((crisis) => CrisisUpdateCard(
-                  title: crisis.title,
-                  description: '${crisis.runtimeType}: ${crisis.description}',
-                  category: crisis.runtimeType.toString(),
-                  timestamp: crisis.date,
-                  criticalLevel: crisis.criticalLevel,
-                  onTap: () {},
-                )).toList(),
-              ),
-            ],
-          ),
+            ),
+            const SizedBox(height: 8.0),
+            Expanded(
+              child: isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : isError
+                      ? const Center(child: Text('Failed to load crisis updates.'))
+                      : ListView.builder(
+                          padding: const EdgeInsets.all(16.0),
+                          itemCount: crises.length,
+                          itemBuilder: (context, index) {
+                            final crisis = crises[index];
+                            return CrisisUpdateCard(
+                              title: crisis.title,
+                              description: '${crisis.runtimeType}: ${crisis.description}',
+                              category: crisis.runtimeType.toString(),
+                              timestamp: crisis.date,
+                              criticalLevel: crisis.criticalLevel,
+                              onTap: () {},
+                            );
+                          },
+                        ),
+            ),
+          ],
         ),
       ),
     );
