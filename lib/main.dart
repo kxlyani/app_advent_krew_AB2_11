@@ -13,7 +13,7 @@ void main() async {
   await loadLoginStatus();
   await loadIDStatus();
 
-  
+  DisasterDataFetcher().fetchAndStoreDisasters();
   
   runApp(const CrisisAssistApp());
 }
