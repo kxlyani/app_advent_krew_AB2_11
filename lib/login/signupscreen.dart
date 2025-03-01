@@ -7,7 +7,7 @@ import 'package:relieflink/login/signupscreen2.dart';
 import 'package:http/http.dart' as http;
 import 'package:relieflink/models/users.dart';
 import 'package:relieflink/screens/home_page.dart';
-// import 'package:relieflink/shared_preferences.dart';
+import 'package:relieflink/shared_preferences.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -90,7 +90,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   Future<bool> verifyIfAccExists(String email) async {
-    final Uri url = Uri.https("relieflink-e824d-default-rtdb.firebaseio.com", "users.json");
+    final Uri url =
+        Uri.https("relieflink-e824d-default-rtdb.firebaseio.com", "users.json");
     try {
       final response = await http.get(url);
       if (response.statusCode == 200) {
@@ -120,7 +121,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
       child: Scaffold(
         backgroundColor: const Color.fromARGB(255, 74, 84, 147),
         body: Container(
-          
           child: Center(
             child: SingleChildScrollView(
               child: Column(
@@ -179,8 +179,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               },
                             ),
                             TextFormField(
-                              decoration:
-                                  const InputDecoration(labelText: 'Emergency Details'),
+                              decoration: const InputDecoration(
+                                  labelText: 'Emergency Details'),
                               onSaved: (value) {
                                 _emergencyDetails = value!;
                               },
@@ -193,8 +193,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             const SizedBox(height: 12),
                             ElevatedButton(
                               onPressed: () async {
-                                // await saveLoginStatus(true);
-                                // logStatus = true;
+                                await saveLoginStatus(true);
+                                logStatus = true;
+                                print('the log status is true now');
                                 Navigator.pushAndRemoveUntil(
                                   context,
                                   MaterialPageRoute(
@@ -214,7 +215,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                           const LoginScreen()),
                                 );
                               },
-                              child: const Text('I already have an Account', style: TextStyle(color: Colors.black),),
+                              child: const Text(
+                                'I already have an Account',
+                                style: TextStyle(color: Colors.black),
+                              ),
                             ),
                             TextButton(
                               onPressed: () {
@@ -225,7 +229,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                           const NGOSignUpScreen()),
                                 );
                               },
-                              child: const Text('Register as an NGO', style: TextStyle(color: Color.fromARGB(255, 76, 150, 189)),),
+                              child: const Text(
+                                'Register as an NGO',
+                                style: TextStyle(
+                                    color: Color.fromARGB(255, 76, 150, 189)),
+                              ),
                             ),
                           ],
                         ),

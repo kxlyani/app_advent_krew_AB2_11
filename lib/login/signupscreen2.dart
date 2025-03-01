@@ -4,7 +4,7 @@ import 'package:email_otp/email_otp.dart';
 import 'package:flutter/material.dart';
 import 'package:relieflink/login/successscreen.dart';
 import 'package:relieflink/models/users.dart';
-// import 'package:relieflink/shared_preferences.dart';
+import 'package:relieflink/shared_preferences.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
 import 'package:http/http.dart' as http;
@@ -60,8 +60,8 @@ class _SignUpScreen2State extends State<SignUpScreen2> {
     
     if (EmailOTP.verifyOTP(otp: _otp)) {
       isSigningIn = true;
-      // await saveIDStatus(_enteredEmail);
-      // universalId = _enteredEmail;
+      await saveIDStatus(_enteredEmail);
+      universalId = _enteredEmail;
       addUser(citizen);
       Navigator.of(context).push(
         MaterialPageRoute(

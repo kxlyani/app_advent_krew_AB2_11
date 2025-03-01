@@ -1,93 +1,203 @@
-// Dashboard Screen - Shows Crisis Information and maps
 import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
 import 'package:relieflink/models/crisis_update_card.dart';
 
-class DashboardScreen extends StatelessWidget {
+// Base Crisis Class
+abstract class Crisis {
+  final String title;
+  final String description;
+  final String country;
+  final String date;
+  final String criticalLevel;
+
+  Crisis({
+    required this.title,
+    required this.description,
+    required this.country,
+    required this.date,
+    required this.criticalLevel,
+  });
+}
+
+// Natural Disaster Class
+class NaturalDisaster extends Crisis {
+  final String disasterType;
+
+  NaturalDisaster({
+    required super.title,
+    required super.description,
+    required this.disasterType,
+    required super.country,
+    required super.date,
+    required super.criticalLevel,
+  });
+
+  factory NaturalDisaster.fromJson(Map<String, dynamic> json) {
+    return NaturalDisaster(
+      title: json['name'] ?? 'No Title',
+      description: json['description'] ?? 'No Description Available',
+      disasterType: json['type']?[0]['name'] ?? 'Unknown',
+      country: json['country']?[0]['name'] ?? 'Unknown Location',
+      date: json['date']?['created'] ?? 'Date Unknown',
+      criticalLevel: 'High', // Placeholder
+    );
+  }
+}
+
+// Humanitarian Conflict Class
+class HumanitarianConflict extends Crisis {
+  final String conflictType;
+
+  HumanitarianConflict({
+    required super.title,
+    required super.description,
+    required this.conflictType,
+    required super.country,
+    required super.date,
+    required super.criticalLevel,
+  });
+
+  factory HumanitarianConflict.fromJson(Map<String, dynamic> json) {
+    return HumanitarianConflict(
+      title: json['title'] ?? 'No Title',
+      description: json['summary'] ?? 'No Description Available',
+      conflictType: json['primary_type'] ?? 'Unknown',
+      country: json['country']?[0]['name'] ?? 'Unknown Location',
+      date: json['date']?['created'] ?? 'Date Unknown',
+      criticalLevel: 'Medium',
+    );
+  }
+}
+
+// Pandemic Class
+class Pandemic extends Crisis {
+  final String disease;
+
+  Pandemic({
+    required super.title,
+    required super.description,
+    required this.disease,
+    required super.country,
+    required super.date,
+    required super.criticalLevel,
+  });
+
+  factory Pandemic.fromJson(Map<String, dynamic> json) {
+    return Pandemic(
+      title: json['title'] ?? 'No Title',
+      description: json['summary'] ?? 'No Description Available',
+      disease: json['disease'] ?? 'Unknown Disease',
+      country: json['country']?[0]['name'] ?? 'Unknown Location',
+      date: json['date']?['created'] ?? 'Date Unknown',
+      criticalLevel: 'High',
+    );
+  }
+}
+
+class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
+
+  @override
+  _DashboardScreenState createState() => _DashboardScreenState();
+}
+
+class _DashboardScreenState extends State<DashboardScreen> {
+  final Dio _dio = Dio();
+  List<Crisis> crises = [];
+  bool isLoading = true;
+  bool isError = false;
+  String selectedCategory = "natural_disaster";
+
+  @override
+  void initState() {
+    super.initState();
+    fetchCrisisData();
+  }
+
+  Future<void> fetchCrisisData() async {
+    String url;
+    if (selectedCategory == "natural_disaster") {
+      url = 'https://api.reliefweb.int/v1/disasters?appname=relieflink&limit=5';
+    } else if (selectedCategory == "humanitarian_conflict") {
+      url = 'https://api.reliefweb.int/v1/reports?appname=relieflink&limit=5';
+    } else {
+      url = 'https://api.reliefweb.int/v1/reports?appname=relieflink&limit=5&query[disease]=true';
+    }
+
+    try {
+      final response = await _dio.get(url);
+      final List<dynamic> data = response.data['data'];
+
+      setState(() {
+        crises = data.map((e) {
+          if (selectedCategory == "natural_disaster") {
+            return NaturalDisaster.fromJson(e['fields']);
+          } else if (selectedCategory == "humanitarian_conflict") {
+            return HumanitarianConflict.fromJson(e['fields']);
+          } else {
+            return Pandemic.fromJson(e['fields']);
+          }
+        }).toList();
+        isLoading = false;
+        isError = false;
+      });
+    } catch (e) {
+      print('Error fetching crisis data: $e');
+      setState(() {
+        isLoading = false;
+        isError = true;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Crisis Dashboard'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications),
-            onPressed: () {
-              // Show notifications
-            },
-          ),
-        ],
-      ),
+      appBar: AppBar(title: const Text('Crisis Dashboard')),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Urgent Crises',
-                style: TextStyle(
-                  fontSize: 22.0,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 16.0),
-              // Crisis map placeholder
+              const Text('Urgent Crises',
+                  style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 16.0),
               Container(
                 height: 200.0,
                 decoration: BoxDecoration(
                   color: Colors.grey[200],
                   borderRadius: BorderRadius.circular(12.0),
                 ),
-                child: const Center(
-                  child: Text('Interactive Crisis Map'),
-                ),
+                child: const Center(child: Text('Interactive Crisis Map')),
               ),
-              const SizedBox(height: 24.0),
-              const Text(
-                'Recent Updates',
-                style: TextStyle(
-                  fontSize: 22.0,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 16.0),
-              // List of crisis updates
-              CrisisUpdateCard(
-                title: 'Earthquake in Nepal',
-                description:
-                    'Magnitude 7.2 earthquake struck central Nepal. Over 5,000 people affected.',
-                category: 'Natural Disaster',
-                timestamp: '2 hours ago',
-                criticalLevel: 'High',
-                onTap: () {
-                  // Navigate to detailed crisis view
+              DropdownButton<String>(
+                value: selectedCategory,
+                items: const [
+                  DropdownMenuItem(value: "natural_disaster", child: Text("Natural Disaster")),
+                  DropdownMenuItem(value: "humanitarian_conflict", child: Text("Humanitarian Conflict")),
+                  DropdownMenuItem(value: "pandemic", child: Text("Pandemic")),
+                ],
+                onChanged: (String? newValue) {
+                  if (newValue != null) {
+                    setState(() {
+                      selectedCategory = newValue;
+                      fetchCrisisData();
+                    });
+                  }
                 },
               ),
-              const SizedBox(height: 12.0),
-              CrisisUpdateCard(
-                title: 'Flooding in Bangladesh',
-                description:
-                    'Heavy monsoon rains cause severe flooding. 10,000+ displaced.',
-                category: 'Natural Disaster',
-                timestamp: '6 hours ago',
-                criticalLevel: 'High',
-                onTap: () {
-                  // Navigate to detailed crisis view
-                },
-              ),
-              const SizedBox(height: 12.0),
-              CrisisUpdateCard(
-                title: 'Humanitarian Crisis in Yemen',
-                description:
-                    'Food shortages affecting vulnerable populations. Aid needed urgently.',
-                category: 'Humanitarian Conflict',
-                timestamp: '1 day ago',
-                criticalLevel: 'Critical',
-                onTap: () {
-                  // Navigate to detailed crisis view
-                },
+              if (isLoading) const Center(child: CircularProgressIndicator())
+              else if (isError) const Center(child: Text('Failed to load crisis updates.'))
+              else Column(
+                children: crises.map((crisis) => CrisisUpdateCard(
+                  title: crisis.title,
+                  description: '${crisis.runtimeType}: ${crisis.description}',
+                  category: crisis.runtimeType.toString(),
+                  timestamp: crisis.date,
+                  criticalLevel: crisis.criticalLevel,
+                  onTap: () {},
+                )).toList(),
               ),
             ],
           ),

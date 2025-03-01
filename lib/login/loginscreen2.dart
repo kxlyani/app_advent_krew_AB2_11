@@ -2,7 +2,7 @@ import 'package:email_otp/email_otp.dart';
 import 'package:flutter/material.dart';
 import 'package:relieflink/login/signupscreen.dart';
 import 'package:relieflink/login/successscreen.dart';
-// import 'package:relieflink/shared_preferences.dart';
+import 'package:relieflink/shared_preferences.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
 
@@ -19,7 +19,7 @@ class _LoginScreen2State extends State<LoginScreen2> {
 
   String _otp = '';
 
-  int _endTime = DateTime.now().millisecondsSinceEpoch + 1000 * 60;
+  int _endTime = DateTime.now().millisecondsSinceEpoch + 1000 * 600;
   bool _isResendEnabled = false;
   late String _enteredEmail;
 
@@ -34,14 +34,14 @@ class _LoginScreen2State extends State<LoginScreen2> {
     EmailOTP.config(
       appName: 'Relief Link',
       otpType: OTPType.numeric,
-      expiry: 60000,
+      expiry: 600000,
       emailTheme: EmailTheme.v6,
       appEmail: 'adway.aghor23@pccoepune.org',
       otpLength: 4,
     );
     EmailOTP.sendOTP(email: _enteredEmail);
     setState(() {
-      _endTime = DateTime.now().millisecondsSinceEpoch + 1000 * 60;
+      _endTime = DateTime.now().millisecondsSinceEpoch + 1000 * 600;
       _isResendEnabled = false; // Disable button until countdown ends
     });
   }
@@ -50,8 +50,8 @@ class _LoginScreen2State extends State<LoginScreen2> {
     //final isValid = _form.currentState!.validate();
   
     if (EmailOTP.verifyOTP(otp: _otp)) {
-      // await saveIDStatus(_enteredEmail);
-      // universalId = _enteredEmail;
+      await saveIDStatus(_enteredEmail);
+      universalId = _enteredEmail;
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (ctx) => const SuccessScreen(),

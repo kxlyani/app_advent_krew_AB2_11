@@ -86,6 +86,8 @@ class CrisisUpdateCard extends StatelessWidget {
               const SizedBox(height: 8.0),
               Text(
                 description,
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   color: Colors.grey[700],
                   fontSize: 14.0,
@@ -112,19 +114,48 @@ class CrisisUpdateCard extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Text(
+                  
+                ],
+              ),
+              Text(
                     timestamp,
                     style: TextStyle(
                       color: Colors.grey[600],
                       fontSize: 12.0,
                     ),
                   ),
-                ],
-              ),
             ],
           ),
         ),
       ),
+    );
+  }
+}
+class Crisis {
+  final String title;
+  final String description;
+  final String category;
+  final String timestamp;
+  final String criticalLevel;
+
+  Crisis({
+    required this.title,
+    required this.description,
+    required this.category,
+    required this.timestamp,
+    required this.criticalLevel,
+  });
+
+  factory Crisis.fromJson(Map<String, dynamic> json) {
+    return Crisis(
+      title: json['title'] ?? 'No Title',
+      description: (json['body'] as String?)?.replaceAll(RegExp(r'<[^>]*>'), '') ??
+          'No Description Available', // Remove HTML tags
+      category: json['theme'] != null && json['theme'].isNotEmpty
+          ? json['theme'][0]['name']
+          : 'General',
+      timestamp: json['date']['created'] ?? 'Unknown',
+      criticalLevel: 'High', // Placeholder since ReliefWeb doesn't provide this
     );
   }
 }
