@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:relieflink/admin/adminpage.dart';
-import 'package:relieflink/login/loginscreen.dart';
+import 'package:relieflink/login/splash_screen.dart';
 import 'package:relieflink/models/database_functions.dart';
-import 'package:relieflink/screens/home_page.dart';
 import 'package:relieflink/shared_preferences.dart';
 
 void main() async {
@@ -12,10 +12,18 @@ void main() async {
   await loadAdminStatus();
   await loadLoginStatus();
   await loadIDStatus();
+  await loadNameStatus();
 
   DisasterDataFetcher().fetchAndStoreDisasters();
+
+  
+  OneSignal.Debug.setLogLevel(OSLogLevel.verbose);
+  OneSignal.initialize('419ea6c0-3874-4aa5-9e7c-04713d0d063f');
+  OneSignal.Notifications.requestPermission(true);
   
   runApp(const CrisisAssistApp());
+
+
 }
 
 class CrisisAssistApp extends StatelessWidget {
@@ -66,5 +74,5 @@ Widget setInitialScreen() {
   if (adminLog) {
     return AdminPage(adminType: universalId,);
   }
-  return logStatus ? const HomePage() : const LoginScreen();
+  return const SplashScreen();
 }

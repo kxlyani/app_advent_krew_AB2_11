@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:xml/xml.dart' as xml;
 
 class DisasterDataFetcher {
-  final String firebaseUrl = 'https://relieflink-e824d-default-rtdb.firebaseio.com/disasters.json'; 
+  final String firebaseUrl = 'https://relieflink-e824d-default-rtdb.firebaseio.com/disasters.json'; // Replace with your Firebase URL
 
   /// Fetches data from all APIs and stores it in Firebase RTDB using REST API
   Future<void> fetchAndStoreDisasters() async {
@@ -89,16 +89,15 @@ class DisasterDataFetcher {
       final items = document.findAllElements('item'); // RSS items
 
       for (var item in items) {
+        // ignore: unused_local_variable
         final title = item.findElements('title').first.text;
+        // ignore: unused_local_variable
         final description = item.findElements('description').first.text;
+        // ignore: unused_local_variable
         final link = item.findElements('link').first.text;
+        // ignore: unused_local_variable
         final pubDate = item.findElements('pubDate').first.text;
 
-        print('\n🔴 Disaster Event:');
-        print('Title: $title');
-        print('Description: $description');
-        print('Link: $link');
-        print('Published: $pubDate');
       }
     } else {
       print('Failed to fetch data from GDACS: ${response.statusCode}');
