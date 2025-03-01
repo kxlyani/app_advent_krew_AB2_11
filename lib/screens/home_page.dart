@@ -18,12 +18,14 @@ class _HomePageState extends State<HomePage> {
     const DashboardScreen(),
     const DonationScreen(),
     const TransparencyScreen(),
-    const AwarenessScreen(),
+    AwarenessScreen(),
     const ProfileScreen(),
   ];
 
+
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
       body: _screens[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
