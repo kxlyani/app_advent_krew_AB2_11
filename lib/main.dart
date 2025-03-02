@@ -13,7 +13,8 @@ void main() async {
   await loadAdminStatus();
   await loadLoginStatus();
   await loadIDStatus();
-  await loadNameStatus();
+  await loadisNGOStatus();
+  
 
   DisasterDataFetcher().fetchAndStoreDisasters();
 

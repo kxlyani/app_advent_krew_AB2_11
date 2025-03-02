@@ -17,6 +17,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  bool itIsNgo = false;
   final _form = GlobalKey<FormState>();
   var _enteredEmail = '';
   // ignore: unused_field
@@ -82,6 +83,10 @@ class _LoginScreenState extends State<LoginScreen> {
       }
       if (await verifyIfAccExists(_enteredEmail) == true) {
         sendOTP(_enteredEmail);
+        if (itIsNgo) {
+          await saveisNGOStatus(true);
+          isNGO = true;
+        }
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
@@ -100,66 +105,67 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<bool> verifyIfAccExists(String email) async {
-    final Uri url = Uri.https(
-      "relieflink-e824d-default-rtdb.firebaseio.com",
-      "users.json",
-    ); // .json is required for Firebase API
+  final Uri url = Uri.https(
+    "relieflink-e824d-default-rtdb.firebaseio.com",
+    "users.json",
+  ); 
 
-    final Uri url2 = Uri.https(
-      "relieflink-e824d-default-rtdb.firebaseio.com",
-      "ngos.json",
-    );
+  final Uri url2 = Uri.https(
+    "relieflink-e824d-default-rtdb.firebaseio.com",
+    "ngos.json",
+  );
 
-    try {
-      final response = await http.get(url);
-      final response2 = await http.get(url2);
+  bool emailFound = false;
 
-      bool emailFound = false; // Flag to track if email is found
-
-      if (response.statusCode == 200) {
-        final Map<String, dynamic>? users = json.decode(response.body);
-        if (users != null) {
-          for (var entry in users.entries) {
-            var user = entry.value;
-            if (user['email'] != null &&
-                user['email'].toString().trim().toLowerCase() ==
-                    email.trim().toLowerCase()) {
-              print('Email found in users.json ✅');
-              emailFound = true;
-            }
+  try {
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      final Map<String, dynamic>? users = json.decode(response.body);
+      if (users != null) {
+        for (var entry in users.entries) {
+          var user = entry.value;
+          if (user['email'] != null &&
+              user['email'].toString().trim().toLowerCase() ==
+                  email.trim().toLowerCase()) {
+            print('Email found in users.json ✅');
+            emailFound = true;
           }
         }
-      } else {
-        print("Failed to fetch users data: ${response.statusCode}");
       }
-
-      if (response2.statusCode == 200) {
-        final Map<String, dynamic>? users2 = json.decode(response2.body);
-        if (users2 != null) {
-          for (var entry in users2.entries) {
-            var user = entry.value;
-            if (user['email'] != null &&
-                user['email'].toString().trim().toLowerCase() ==
-                    email.trim().toLowerCase()) {
-              print('Email found in ngos.json ✅');
-              emailFound = true;
-            }
-          }
-        }
-      } else {
-        print("Failed to fetch ngo data: ${response2.statusCode}");
-      }
-
-      if (!emailFound) {
-        print('Email NOT found ❌');
-      }
-
-      return emailFound;
-    } catch (error) {
-      print("Error: $error");
-      return false; // Return false in case of an error
+    } else {
+      print("Failed to fetch users data: ${response.statusCode}");
     }
+
+    final response2 = await http.get(url2);
+    if (response2.statusCode == 200) {
+      final Map<String, dynamic>? users2 = json.decode(response2.body);
+      if (users2 != null) {
+        for (var entry in users2.entries) {
+          var user = entry.value;
+          if (user['email'] != null &&
+              user['email'].toString().trim().toLowerCase() ==
+                  email.trim().toLowerCase()) {
+            print('Email found in ngos.json ✅');
+            emailFound = true;
+            itIsNgo = true; // Set NGO flag
+          }
+        }
+      }
+    } else {
+      print("Failed to fetch ngos data: ${response2.statusCode}");
+    }
+
+    if (!emailFound) {
+      print('Email NOT found ❌');
+    }
+
+    return emailFound;
+  } catch (error) {
+    print("Error: $error");
+    return false;
   }
+}
+
 
   void sendOTP(String email) {
     EmailOTP.config(
@@ -177,28 +183,23 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    
     return SafeArea(
       child: Scaffold(
-        backgroundColor:  const Color(0xFF2D7DD2),
+        backgroundColor: const Color(0xFF2D7DD2),
         extendBody: true,
         body: Container(
-          
           child: Center(
             child: SingleChildScrollView(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  
                   Card(
                     color: Colors.white,
                     margin: const EdgeInsets.all(20),
                     child: SingleChildScrollView(
                       child: Padding(
-                        
                         padding: const EdgeInsets.all(16),
                         child: Form(
-                          
                           key: _form,
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
@@ -215,7 +216,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       !value.contains('@')) {
                                     return 'Please enter a valid email address.';
                                   }
-    
+
                                   return null;
                                 },
                                 onSaved: (value) {

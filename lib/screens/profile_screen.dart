@@ -188,7 +188,7 @@ class ProfileScreen extends StatelessWidget {
               ),
               const SizedBox(height: 24.0),
               Visibility(
-                visible: universalId != 'Sign Up/ Login to view details',
+                visible: isNGO,
                 child: ListTile(
                   leading: const Icon(Icons.history),
                   title: const Text('Create Campaign'),
@@ -273,6 +273,8 @@ class ProfileScreen extends StatelessWidget {
                     );
 
                     if (shouldExit == true) {
+                      await saveisNGOStatus(false);
+      isNGO = false;
                       await saveLoginStatus(false);
                       logStatus = false;
                       await saveIDStatus('Sign Up/ Login to view details');
