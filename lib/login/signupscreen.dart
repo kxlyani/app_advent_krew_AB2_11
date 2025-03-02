@@ -119,6 +119,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        appBar: AppBar(
+          title: Text('Create a new account'),
+        ),
         backgroundColor: const Color(0xFF2D7DD2),
         body: Container(
           child: Center(

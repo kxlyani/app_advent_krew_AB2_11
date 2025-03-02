@@ -179,83 +179,90 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            'Login to your account',
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ),
         backgroundColor: const Color(0xFF2D7DD2),
         extendBody: true,
-        body: Container(
-          child: Center(
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Card(
-                    color: Colors.white,
-                    margin: const EdgeInsets.all(20),
-                    child: SingleChildScrollView(
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Form(
-                          key: _form,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              TextFormField(
-                                decoration: const InputDecoration(
-                                    labelText: 'Email Address'),
-                                keyboardType: TextInputType.emailAddress,
-                                autocorrect: false,
-                                textCapitalization: TextCapitalization.none,
-                                validator: (value) {
-                                  if (value == null ||
-                                      value.trim().isEmpty ||
-                                      !value.contains('@')) {
-                                    return 'Please enter a valid email address.';
-                                  }
+        body: Center(
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Card(
+                  color: Colors.white,
+                  margin: const EdgeInsets.all(20),
+                  child: SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Form(
+                        key: _form,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            TextFormField(
+                              decoration: const InputDecoration(
+                                  labelText: 'Email Address'),
+                              keyboardType: TextInputType.emailAddress,
+                              autocorrect: false,
+                              textCapitalization: TextCapitalization.none,
+                              validator: (value) {
+                                if (value == null ||
+                                    value.trim().isEmpty ||
+                                    !value.contains('@')) {
+                                  return 'Please enter a valid email address.';
+                                }
 
-                                  return null;
-                                },
-                                onSaved: (value) {
-                                  _enteredEmail = value!;
-                                  print(_enteredEmail);
-                                },
+                                return null;
+                              },
+                              onSaved: (value) {
+                                _enteredEmail = value!;
+                                print(_enteredEmail);
+                              },
+                            ),
+                            const SizedBox(
+                              height: 19,
+                            ),
+                            ElevatedButton(
+                              onPressed: () async {
+                                _submit();
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor:
+                                    const Color.fromARGB(255, 50, 100, 150),
                               ),
-                              const SizedBox(
-                                height: 19,
+                              child: const Text(
+                                'Send OTP',
+                                style: TextStyle(color: Colors.white),
                               ),
-                              ElevatedButton(
-                                onPressed: () async {
-                                  _submit();
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor:
-                                      const Color.fromARGB(255, 50, 100, 150),
-                                ),
-                                child: const Text(
-                                  'Send OTP',
-                                  style: TextStyle(color: Colors.white),
-                                ),
+                            ),
+                            // const SizedBox(height: 12),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (ctx) => const SignUpScreen(),
+                                  ),
+                                );
+                              },
+                              child: const Text(
+                                'Create an account',
+                                style: TextStyle(color: Colors.black),
                               ),
-                              // const SizedBox(height: 12),
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (ctx) => const SignUpScreen(),
-                                    ),
-                                  );
-                                },
-                                child: const Text(
-                                  'Create an account',
-                                  style: TextStyle(color: Colors.black),
-                                ),
-                              ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),

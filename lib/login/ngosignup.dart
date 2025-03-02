@@ -123,6 +123,9 @@ class _NGOSignUpScreenState extends State<NGOSignUpScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        appBar: AppBar(
+          title: Text('Create a new account'),
+        ),
         backgroundColor: const Color(0xFF2D7DD2),
         body: Center(
           child: SingleChildScrollView(
