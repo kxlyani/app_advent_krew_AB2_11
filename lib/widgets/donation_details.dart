@@ -8,18 +8,19 @@ class DonationDetails extends StatelessWidget {
     required this.organization,
     required this.target,
     required this.raised,
-    required this.imageUrl,
+    required this.imageUrl, required this.merchantId,
   });
 
   final String title;
   final String organization;
-  final double target;
-  final double raised;
+  final String target;
+  final String raised;
   final String imageUrl;
+  final String merchantId;
 
   @override
   Widget build(BuildContext context) {
-    final double progress = raised / target;
+    final double progress = 0;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -77,14 +78,16 @@ class DonationDetails extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  '\$${raised.toStringAsFixed(0)} raised',
+                  '0',
+                  //'\$${raised.toStringAsFixed(0)} raised',
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Colors.green,
                   ),
                 ),
                 Text(
-                  'Goal: \$${target.toStringAsFixed(0)}',
+                  'Goal: 10000',
+                  // 'Goal: \$${target.toStringAsFixed(0)}',
                   style: TextStyle(
                     color: Colors.grey[700],
                   ),
@@ -114,7 +117,10 @@ class DonationDetails extends StatelessWidget {
                           onPressed: () {
                             Navigator.of(context).push(
                               MaterialPageRoute(
-                                builder: (ctx) => CampaignDonationPage(campaignId: title,),
+                                builder: (ctx) => CampaignDonationPage(
+                                  campaignId: title,
+                                  merchantId: merchantId,
+                                ),
                               ),
                             );
                           },

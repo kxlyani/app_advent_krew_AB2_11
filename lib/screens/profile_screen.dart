@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:relieflink/login/loginscreen.dart';
 import 'package:relieflink/login/splash_screen.dart';
+import 'package:relieflink/models/create_campaign_card.dart';
 import 'package:relieflink/shared_preferences.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -186,6 +187,21 @@ class ProfileScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 24.0),
+              Visibility(
+                visible: universalId != 'Sign Up/ Login to view details',
+                child: ListTile(
+                  leading: const Icon(Icons.history),
+                  title: const Text('Create Campaign'),
+                  trailing: const Icon(Icons.arrow_forward_ios, size: 16.0),
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (ctx) => CreateCampaignCard(ngoEmail: universalId,),),);
+                  
+                  },
+                ),
+              ),
               // Profile sections
               ListTile(
                 leading: const Icon(Icons.history),

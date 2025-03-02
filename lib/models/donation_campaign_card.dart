@@ -6,9 +6,10 @@ import 'package:relieflink/widgets/donation_details.dart';
 class DonationCampaignCard extends StatelessWidget {
   final String title;
   final String organization;
-  final double target;
-  final double raised;
+  final String target;
+  final String raised;
   final String imageUrl;
+  final String merchantId;
 
   const DonationCampaignCard({
     super.key,
@@ -16,12 +17,12 @@ class DonationCampaignCard extends StatelessWidget {
     required this.organization,
     required this.target,
     required this.raised,
-    required this.imageUrl,
+    required this.imageUrl, required this.merchantId,
   });
 
   @override
   Widget build(BuildContext context) {
-    final double progress = raised / target;
+    final double progress = 0;
 
     return Card(
       elevation: 3.0,
@@ -84,14 +85,16 @@ class DonationCampaignCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      '\$${raised.toStringAsFixed(0)} raised',
+                      '0',
+                      //'\$${raised.toStringAsFixed(0)} raised',
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Colors.green,
                       ),
                     ),
                     Text(
-                      'Goal: \$${target.toStringAsFixed(0)}',
+                      'Goal: 10000',
+                      // 'Goal: \$${target.toStringAsFixed(0)}',
                       style: TextStyle(
                         color: Colors.grey[700],
                       ),
@@ -113,6 +116,7 @@ class DonationCampaignCard extends StatelessWidget {
                               target: target,
                               raised: raised,
                               organization: organization,
+                              merchantId: merchantId,
                             ),
                           ),
                         );

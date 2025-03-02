@@ -42,3 +42,21 @@ class NGO {
       required this.website,
       required this.missionStatement});
 }
+
+class Campaign {
+  final String ngoEmail;
+  final String merchantId;
+  final String campaignName;
+  final String description;
+  final String goal;
+  final String raised;
+
+  Campaign({
+    required this.ngoEmail,
+    required this.merchantId,
+    required this.campaignName,
+    required this.description,
+    required this.goal,
+    required this.raised,
+  });
+}
