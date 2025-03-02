@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:relieflink/screens/razorpay_screen.dart';
 
 class DonationDetails extends StatelessWidget {
   const DonationDetails({
@@ -111,8 +112,11 @@ class DonationDetails extends StatelessWidget {
                         ),
                         TextButton(
                           onPressed: () {
-                            // Handle donation logic here
-                            Navigator.of(context).pop();
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (ctx) => CampaignDonationPage(campaignId: title,),
+                              ),
+                            );
                           },
                           child: const Text('Donate'),
                         ),
@@ -122,7 +126,8 @@ class DonationDetails extends StatelessWidget {
                 },
                 child: const Text('Donate Now'),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green, // Background color of the button
+                  backgroundColor:
+                      Colors.green, // Background color of the button
                   padding: const EdgeInsets.symmetric(vertical: 16.0),
                   textStyle: const TextStyle(fontSize: 18.0),
                 ),
