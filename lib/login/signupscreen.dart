@@ -191,22 +191,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               onPressed: _submit,
                               child: const Text('Send OTP'),
                             ),
-                            const SizedBox(height: 12),
-                            ElevatedButton(
-                              onPressed: () async {
-                                await saveLoginStatus(true);
-                                logStatus = true;
-                                print('the log status is true now');
-                                Navigator.pushAndRemoveUntil(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => const HomePage()),
-                                  (route) => false,
-                                );
-                              },
-                              child: const Text('Temp Login'),
-                            ),
-                            const SizedBox(height: 12),
+                            // const SizedBox(height: 12),
                             TextButton(
                               onPressed: () {
                                 Navigator.pushReplacement(

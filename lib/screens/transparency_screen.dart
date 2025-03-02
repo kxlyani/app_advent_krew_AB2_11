@@ -39,7 +39,7 @@ class TransparencyScreen extends StatelessWidget {
                   Expanded(
                     child: ImpactStatCard(
                       icon: Icons.volunteer_activism,
-                      value: '\$1,280',
+                      value: '\$1,230',
                       label: 'Your Donations',
                       color: Colors.blue,
                     ),

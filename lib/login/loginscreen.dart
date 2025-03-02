@@ -17,7 +17,6 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  bool itIsNgo = false;
   final _form = GlobalKey<FormState>();
   var _enteredEmail = '';
   // ignore: unused_field
@@ -83,10 +82,6 @@ class _LoginScreenState extends State<LoginScreen> {
       }
       if (await verifyIfAccExists(_enteredEmail) == true) {
         sendOTP(_enteredEmail);
-        if (itIsNgo) {
-          await saveisNGOStatus(true);
-          isNGO = true;
-        }
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
@@ -105,67 +100,66 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<bool> verifyIfAccExists(String email) async {
-  final Uri url = Uri.https(
-    "relieflink-e824d-default-rtdb.firebaseio.com",
-    "users.json",
-  ); 
+    final Uri url = Uri.https(
+      "relieflink-e824d-default-rtdb.firebaseio.com",
+      "users.json",
+    ); // .json is required for Firebase API
 
-  final Uri url2 = Uri.https(
-    "relieflink-e824d-default-rtdb.firebaseio.com",
-    "ngos.json",
-  );
+    final Uri url2 = Uri.https(
+      "relieflink-e824d-default-rtdb.firebaseio.com",
+      "ngos.json",
+    );
 
-  bool emailFound = false;
+    try {
+      final response = await http.get(url);
+      final response2 = await http.get(url2);
 
-  try {
-    final response = await http.get(url);
-    if (response.statusCode == 200) {
-      final Map<String, dynamic>? users = json.decode(response.body);
-      if (users != null) {
-        for (var entry in users.entries) {
-          var user = entry.value;
-          if (user['email'] != null &&
-              user['email'].toString().trim().toLowerCase() ==
-                  email.trim().toLowerCase()) {
-            print('Email found in users.json ✅');
-            emailFound = true;
+      bool emailFound = false; // Flag to track if email is found
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic>? users = json.decode(response.body);
+        if (users != null) {
+          for (var entry in users.entries) {
+            var user = entry.value;
+            if (user['email'] != null &&
+                user['email'].toString().trim().toLowerCase() ==
+                    email.trim().toLowerCase()) {
+              print('Email found in users.json ✅');
+              emailFound = true;
+            }
           }
         }
+      } else {
+        print("Failed to fetch users data: ${response.statusCode}");
       }
-    } else {
-      print("Failed to fetch users data: ${response.statusCode}");
-    }
 
-    final response2 = await http.get(url2);
-    if (response2.statusCode == 200) {
-      final Map<String, dynamic>? users2 = json.decode(response2.body);
-      if (users2 != null) {
-        for (var entry in users2.entries) {
-          var user = entry.value;
-          if (user['email'] != null &&
-              user['email'].toString().trim().toLowerCase() ==
-                  email.trim().toLowerCase()) {
-            print('Email found in ngos.json ✅');
-            emailFound = true;
-            itIsNgo = true; // Set NGO flag
+      if (response2.statusCode == 200) {
+        final Map<String, dynamic>? users2 = json.decode(response2.body);
+        if (users2 != null) {
+          for (var entry in users2.entries) {
+            var user = entry.value;
+            if (user['email'] != null &&
+                user['email'].toString().trim().toLowerCase() ==
+                    email.trim().toLowerCase()) {
+              print('Email found in ngos.json ✅');
+              emailFound = true;
+            }
           }
         }
+      } else {
+        print("Failed to fetch ngo data: ${response2.statusCode}");
       }
-    } else {
-      print("Failed to fetch ngos data: ${response2.statusCode}");
-    }
 
-    if (!emailFound) {
-      print('Email NOT found ❌');
-    }
+      if (!emailFound) {
+        print('Email NOT found ❌');
+      }
 
-    return emailFound;
-  } catch (error) {
-    print("Error: $error");
-    return false;
+      return emailFound;
+    } catch (error) {
+      print("Error: $error");
+      return false; // Return false in case of an error
+    }
   }
-}
-
 
   void sendOTP(String email) {
     EmailOTP.config(
@@ -224,6 +218,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                   print(_enteredEmail);
                                 },
                               ),
+                              const SizedBox(
+                                height: 19,
+                              ),
                               ElevatedButton(
                                 onPressed: () async {
                                   _submit();
@@ -237,7 +234,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   style: TextStyle(color: Colors.white),
                                 ),
                               ),
-                              const SizedBox(height: 12),
+                              // const SizedBox(height: 12),
                               TextButton(
                                 onPressed: () {
                                   Navigator.of(context).push(

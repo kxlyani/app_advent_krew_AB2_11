@@ -55,7 +55,7 @@ class _NGOSignUpScreenState extends State<NGOSignUpScreen2> {
 
   void _submit() async {
     _form.currentState!.save();
-    
+
     bool isOtpValid = await verifyEmailOTP(_enteredEmail, _otp);
     if (isOtpValid) {
       isSigningIn = true;
@@ -122,7 +122,6 @@ class _NGOSignUpScreenState extends State<NGOSignUpScreen2> {
       child: Scaffold(
         backgroundColor: const Color(0xFF2D7DD2),
         body: Container(
-          
           child: Center(
             child: SingleChildScrollView(
               child: Column(
@@ -140,7 +139,7 @@ class _NGOSignUpScreenState extends State<NGOSignUpScreen2> {
                           children: [
                             PinCodeTextField(
                               appContext: context,
-                              length: 4,
+                              length: 4, // OTP length
                               validator: (value) {
                                 if (value == null || value.trim().length != 4) {
                                   return 'Please enter a valid 4-digit OTP.';
@@ -148,9 +147,22 @@ class _NGOSignUpScreenState extends State<NGOSignUpScreen2> {
                                 return null;
                               },
                               onChanged: (value) {
-                                _otp = value;
+                                _otp = value; // Save the entered OTP
                               },
                               keyboardType: TextInputType.number,
+                              textStyle: const TextStyle(fontSize: 20),
+                              pinTheme: PinTheme(
+                                shape: PinCodeFieldShape.box,
+                                borderRadius: BorderRadius.circular(5),
+                                selectedColor: Colors.black,
+                                activeColor: const Color.fromARGB(255, 0, 0, 0),
+                                inactiveColor:
+                                    const Color.fromARGB(255, 50, 100, 150),
+                                fieldHeight: 50,
+                                fieldWidth: 40,
+                                activeFillColor: Colors.white,
+                              ),
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             ),
                             _isResendEnabled
                                 ? const Text("Didn't receive OTP?")
@@ -182,7 +194,8 @@ class _NGOSignUpScreenState extends State<NGOSignUpScreen2> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => const LoginScreen()),
+                                      builder: (context) =>
+                                          const LoginScreen()),
                                 );
                               },
                               child: const Text('I already have an account'),

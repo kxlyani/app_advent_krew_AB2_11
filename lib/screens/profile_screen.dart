@@ -26,6 +26,9 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String shortform = createEmailShortForm(universalId);
+    if (isNGO) {
+      shortform = 'NGO';
+    }
     return Scaffold(
       appBar: AppBar(
         title: const Text('My Profile'),
@@ -114,7 +117,7 @@ class ProfileScreen extends StatelessWidget {
                         Column(
                           children: [
                             Text(
-                              '\$1,450',
+                              '\$12',
                               style: TextStyle(
                                 fontSize: 20.0,
                                 fontWeight: FontWeight.bold,
