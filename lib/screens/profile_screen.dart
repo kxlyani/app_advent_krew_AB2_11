@@ -1,13 +1,30 @@
 // Profile Screen - User profile and settings
 import 'package:flutter/material.dart';
 import 'package:relieflink/login/loginscreen.dart';
+import 'package:relieflink/login/splash_screen.dart';
 import 'package:relieflink/shared_preferences.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
+  String createEmailShortForm(String email) {
+    // Check if the email has enough characters (at least 7)
+    if (email.length < 7) {
+      throw FormatException('Email should have at least 7 characters');
+    }
+
+    // Get the first letter
+    String firstLetter = email[0].toUpperCase();
+
+    // Get the letter 6 positions after the first letter
+    String secondLetter = email[6].toUpperCase();
+
+    return '$firstLetter$secondLetter'; // Combine the letters
+  }
+
   @override
   Widget build(BuildContext context) {
+    String shortform = createEmailShortForm(universalId);
     return Scaffold(
       appBar: AppBar(
         title: const Text('My Profile'),
@@ -27,11 +44,13 @@ class ProfileScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const SizedBox(height: 16.0),
-              const CircleAvatar(
+              CircleAvatar(
                 radius: 50.0,
                 backgroundColor: Colors.blue,
                 child: Text(
-                  'JS',
+                  (universalId != 'Sign Up/ Login to view details')
+                      ? shortform
+                      : '-',
                   style: TextStyle(
                     fontSize: 32.0,
                     color: Colors.white,
@@ -40,21 +59,35 @@ class ProfileScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 16.0),
-              const Text(
-                'John Smith',
-                style: TextStyle(
-                  fontSize: 24.0,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 4.0),
               Text(
-                'Member since January 2023',
+                (universalId != 'Sign Up/ Login to view details')
+                    ? universalId
+                    : 'Sign Up/ Login to view details',
                 style: TextStyle(
-                  fontSize: 14.0,
-                  color: Colors.grey[600],
+                  fontSize: (universalId != 'Sign Up/ Login to view details')
+                      ? 24.0
+                      : 16.0,
+                  fontWeight: (universalId != 'Sign Up/ Login to view details')
+                      ? FontWeight.bold
+                      : FontWeight.normal,
                 ),
               ),
+              const SizedBox(
+                height: 12,
+              ),
+              Visibility(
+                visible: universalId == 'Sign Up/ Login to view details',
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (ctx) => const LoginScreen()));
+                  },
+                  child: const Text('Login/Signup'),
+                ),
+              ),
+
               const SizedBox(height: 24.0),
               // Donation stats
               Container(
@@ -204,39 +237,38 @@ class ProfileScreen extends StatelessWidget {
                 width: double.infinity,
                 child: OutlinedButton(
                   onPressed: () async {
-                          bool shouldExit = await showDialog(
-                            context: context,
-                            builder: (context) => AlertDialog(
-                              title: const Text("Log Out?"),
-                              content: const Text(
-                                  "You will be signed out of the application. Do you really want to log out?"),
-                              actions: [
-                                TextButton(
-                                  onPressed: () =>
-                                      Navigator.of(context).pop(false),
-                                  child: const Text("No"),
-                                ),
-                                TextButton(
-                                  onPressed: () =>
-                                      Navigator.of(context).pop(true),
-                                  child: const Text("Yes"),
-                                ),
-                              ],
-                            ),
-                          );
+                    bool shouldExit = await showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: const Text("Log Out?"),
+                        content: const Text(
+                            "You will be signed out of the application. Do you really want to log out?"),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.of(context).pop(false),
+                            child: const Text("No"),
+                          ),
+                          TextButton(
+                            onPressed: () => Navigator.of(context).pop(true),
+                            child: const Text("Yes"),
+                          ),
+                        ],
+                      ),
+                    );
 
-                          if (shouldExit == true) {
-                            await saveLoginStatus(false);
-                            logStatus = false;
-                            print('The logstatus is $logStatus');
-                            Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const LoginScreen()),
-                              (route) => false,
-                            );
-                          }
-                        },
+                    if (shouldExit == true) {
+                      await saveLoginStatus(false);
+                      logStatus = false;
+                      await saveIDStatus('Sign Up/ Login to view details');
+                      universalId = 'Sign Up/ Login to view details';
+                      print('The logstatus is $logStatus');
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (context) => SplashScreen()),
+                        (route) => false,
+                      );
+                    }
+                  },
                   style: OutlinedButton.styleFrom(
                     side: const BorderSide(color: Colors.red),
                     foregroundColor: Colors.red,

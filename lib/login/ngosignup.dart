@@ -123,10 +123,11 @@ class _NGOSignUpScreenState extends State<NGOSignUpScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: const Color.fromARGB(255, 74, 84, 147),
+        backgroundColor: const Color(0xFF2D7DD2),
         body: Center(
           child: SingleChildScrollView(
             child: Card(
+              color: Colors.white,
               margin: const EdgeInsets.all(20),
               child: Padding(
                 padding: const EdgeInsets.all(16),

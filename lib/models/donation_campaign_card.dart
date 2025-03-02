@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:relieflink/login/loginscreen.dart';
+import 'package:relieflink/shared_preferences.dart';
+import 'package:relieflink/widgets/donation_details.dart';
 
 class DonationCampaignCard extends StatelessWidget {
   final String title;
@@ -6,7 +9,6 @@ class DonationCampaignCard extends StatelessWidget {
   final double target;
   final double raised;
   final String imageUrl;
-  final VoidCallback onDonate;
 
   const DonationCampaignCard({
     super.key,
@@ -15,7 +17,6 @@ class DonationCampaignCard extends StatelessWidget {
     required this.target,
     required this.raised,
     required this.imageUrl,
-    required this.onDonate,
   });
 
   @override
@@ -98,13 +99,62 @@ class DonationCampaignCard extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 16.0),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: onDonate,
-                    child: const Text('Donate Now'),
+                // Only show button if logStatus is true
+                if (logStatus)
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (ctx) => DonationDetails(
+                              imageUrl: imageUrl,
+                              title: title,
+                              target: target,
+                              raised: raised,
+                              organization: organization,
+                            ),
+                          ),
+                        );
+                      },
+                      child: const Text('Donate Now'),
+                    ),
+                  )
+                else
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: const Text('Login Required'),
+                            content: const Text(
+                                'You need to login to donate. Please login first.'),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text('Cancel'),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (ctx) => LoginScreen(),
+                                    ),
+                                  );
+                                },
+                                child: const Text('Login'),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                      child: const Text('Donate Now'),
+                    ),
                   ),
-                ),
               ],
             ),
           ),

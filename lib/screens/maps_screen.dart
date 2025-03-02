@@ -5,6 +5,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class DisasterMapScreen extends StatefulWidget {
+  const DisasterMapScreen({super.key});
+
   @override
   _DisasterMapScreenState createState() => _DisasterMapScreenState();
 }

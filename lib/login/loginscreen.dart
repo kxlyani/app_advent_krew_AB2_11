@@ -147,7 +147,7 @@ class _LoginScreenState extends State<LoginScreen> {
           }
         }
       } else {
-        print("Failed to fetch alumni data: ${response2.statusCode}");
+        print("Failed to fetch ngo data: ${response2.statusCode}");
       }
 
       if (!emailFound) {
@@ -178,85 +178,85 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     
-    return WillPopScope(
-      onWillPop: () async => false,
-      child: SafeArea(
-        child: Scaffold(
-          backgroundColor: const Color.fromARGB(255, 74, 84, 147),
-          extendBody: true,
-          body: Container(
-            
-            child: Center(
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    
-                    Card(
-                      margin: const EdgeInsets.all(20),
-                      child: SingleChildScrollView(
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Form(
-                            key: _form,
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                TextFormField(
-                                  decoration: const InputDecoration(
-                                      labelText: 'Email Address'),
-                                  keyboardType: TextInputType.emailAddress,
-                                  autocorrect: false,
-                                  textCapitalization: TextCapitalization.none,
-                                  validator: (value) {
-                                    if (value == null ||
-                                        value.trim().isEmpty ||
-                                        !value.contains('@')) {
-                                      return 'Please enter a valid email address.';
-                                    }
-
-                                    return null;
-                                  },
-                                  onSaved: (value) {
-                                    _enteredEmail = value!;
-                                    print(_enteredEmail);
-                                  },
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor:  const Color(0xFF2D7DD2),
+        extendBody: true,
+        body: Container(
+          
+          child: Center(
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  
+                  Card(
+                    color: Colors.white,
+                    margin: const EdgeInsets.all(20),
+                    child: SingleChildScrollView(
+                      child: Padding(
+                        
+                        padding: const EdgeInsets.all(16),
+                        child: Form(
+                          
+                          key: _form,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              TextFormField(
+                                decoration: const InputDecoration(
+                                    labelText: 'Email Address'),
+                                keyboardType: TextInputType.emailAddress,
+                                autocorrect: false,
+                                textCapitalization: TextCapitalization.none,
+                                validator: (value) {
+                                  if (value == null ||
+                                      value.trim().isEmpty ||
+                                      !value.contains('@')) {
+                                    return 'Please enter a valid email address.';
+                                  }
+    
+                                  return null;
+                                },
+                                onSaved: (value) {
+                                  _enteredEmail = value!;
+                                  print(_enteredEmail);
+                                },
+                              ),
+                              ElevatedButton(
+                                onPressed: () async {
+                                  _submit();
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor:
+                                      const Color.fromARGB(255, 50, 100, 150),
                                 ),
-                                ElevatedButton(
-                                  onPressed: () async {
-                                    _submit();
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor:
-                                        const Color.fromARGB(255, 50, 100, 150),
-                                  ),
-                                  child: const Text(
-                                    'Send OTP',
-                                    style: TextStyle(color: Colors.white),
-                                  ),
+                                child: const Text(
+                                  'Send OTP',
+                                  style: TextStyle(color: Colors.white),
                                 ),
-                                const SizedBox(height: 12),
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (ctx) => const SignUpScreen(),
-                                      ),
-                                    );
-                                  },
-                                  child: const Text(
-                                    'Create an account',
-                                    style: TextStyle(color: Colors.black),
-                                  ),
+                              ),
+                              const SizedBox(height: 12),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (ctx) => const SignUpScreen(),
+                                    ),
+                                  );
+                                },
+                                child: const Text(
+                                  'Create an account',
+                                  style: TextStyle(color: Colors.black),
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),

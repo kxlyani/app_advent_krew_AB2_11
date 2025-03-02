@@ -113,7 +113,7 @@ class _SignUpScreen2State extends State<SignUpScreen2> {
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
-        backgroundColor: const Color.fromARGB(255, 74, 84, 147),
+        backgroundColor: const Color(0xFF2D7DD2),
         body: Container(
           
           child: Center(
@@ -123,6 +123,7 @@ class _SignUpScreen2State extends State<SignUpScreen2> {
                 children: [
                  
                   Card(
+                    color: Colors.white,
                     margin: const EdgeInsets.all(20),
                     child: SingleChildScrollView(
                       child: Padding(
