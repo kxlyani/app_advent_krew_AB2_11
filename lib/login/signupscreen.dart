@@ -6,8 +6,8 @@ import 'package:relieflink/login/ngosignup.dart';
 import 'package:relieflink/login/signupscreen2.dart';
 import 'package:http/http.dart' as http;
 import 'package:relieflink/models/users.dart';
-import 'package:relieflink/screens/home_page.dart';
-import 'package:relieflink/shared_preferences.dart';
+// import 'package:relieflink/screens/home_page.dart';
+// import 'package:relieflink/shared_preferences.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
