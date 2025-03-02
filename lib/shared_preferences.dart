@@ -4,15 +4,27 @@ bool logStatus = false;
 bool adminLog = false;
 String universalId = 'Sign Up/ Login to view details';
 String name = '';
+bool isNGO = false;
 
 Future<void> loadIDStatus() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  universalId = prefs.getString('universalId') ?? 'Sign Up/ Login to view details';
+  universalId =
+      prefs.getString('universalId') ?? 'Sign Up/ Login to view details';
 }
 
 Future<void> saveIDStatus(String value) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   await prefs.setString('universalId', value);
+}
+
+Future<void> loadisNGOStatus() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  isNGO = prefs.getBool('isNGO') ?? false;
+}
+
+Future<void> saveisNGOStatus(bool status) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.setBool('isNGO', status);
 }
 
 Future<void> loadNameStatus() async {

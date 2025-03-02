@@ -61,6 +61,8 @@ class _NGOSignUpScreenState extends State<NGOSignUpScreen2> {
       isSigningIn = true;
       await saveIDStatus(_enteredEmail);
       universalId = _enteredEmail;
+      await saveisNGOStatus(true);
+      isNGO = true;
       addNGO(ngo);
       Navigator.of(context).push(
         MaterialPageRoute(
