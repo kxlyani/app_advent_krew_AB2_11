@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:relieflink/screens/forum_screen.dart';
 
 class AwarenessScreen extends StatelessWidget {
   AwarenessScreen({super.key});
@@ -28,65 +29,82 @@ class AwarenessScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Learn & Share'),
       ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Education & Awareness',
-                style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold),
+      body: Stack(
+        children: [
+          SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Education & Awareness',
+                    style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 8.0),
+                  Text(
+                    'Learn about humanitarian crises and share knowledge',
+                    style: TextStyle(color: Colors.grey[700], fontSize: 16.0),
+                  ),
+                  const SizedBox(height: 24.0),
+          
+                  // Featured Content Card
+                  const Text(
+                    'Featured Content',
+                    style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 16.0),
+                  _buildFeaturedContentCard(),
+          
+                  const SizedBox(height: 24.0),
+          
+                  // Educational Resources List
+                  const Text(
+                    'Educational Resources',
+                    style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 16.0),
+                  _buildEducationalResources(),
+          
+                  const SizedBox(height: 24.0),
+          
+                  // Active Campaigns
+                  const Text(
+                    'Active Campaigns',
+                    style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 16.0),
+                  _buildCampaignCard(
+                    title: '#StandWithRefugees',
+                    description:
+                        'Share your support for refugees using the hashtag #StandWithRefugees on social media.',
+                    color: Colors.blue,
+                  ),
+                  const SizedBox(height: 12.0),
+                  _buildCampaignCard(
+                    title: '#ClimateAction',
+                    description:
+                        'Join the campaign to raise awareness about climate-related disasters.',
+                    color: Colors.green,
+                  ),
+                ],
               ),
-              const SizedBox(height: 8.0),
-              Text(
-                'Learn about humanitarian crises and share knowledge',
-                style: TextStyle(color: Colors.grey[700], fontSize: 16.0),
-              ),
-              const SizedBox(height: 24.0),
-
-              // Featured Content Card
-              const Text(
-                'Featured Content',
-                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 16.0),
-              _buildFeaturedContentCard(),
-
-              const SizedBox(height: 24.0),
-
-              // Educational Resources List
-              const Text(
-                'Educational Resources',
-                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 16.0),
-              _buildEducationalResources(),
-
-              const SizedBox(height: 24.0),
-
-              // Active Campaigns
-              const Text(
-                'Active Campaigns',
-                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 16.0),
-              _buildCampaignCard(
-                title: '#StandWithRefugees',
-                description:
-                    'Share your support for refugees using the hashtag #StandWithRefugees on social media.',
-                color: Colors.blue,
-              ),
-              const SizedBox(height: 12.0),
-              _buildCampaignCard(
-                title: '#ClimateAction',
-                description:
-                    'Join the campaign to raise awareness about climate-related disasters.',
-                color: Colors.green,
-              ),
-            ],
+            ),
           ),
-        ),
+          Positioned(
+            bottom: 20,
+            right: 20,
+            child: FloatingActionButton(
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return CommunityForum();
+                },));
+              },
+              backgroundColor: Colors.blueAccent,
+              child: const Icon(Icons.forum, color: Colors.white,),
+            ),
+          ),
+        ],
       ),
     );
   }

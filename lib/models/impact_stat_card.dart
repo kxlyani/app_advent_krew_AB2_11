@@ -17,34 +17,41 @@ class ImpactStatCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 2.0,
+      elevation: 6.0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12.0),
       ),
-      child: Padding(
+      child: Container(
         padding: const EdgeInsets.all(16.0),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [color.withOpacity(0.7), color.withOpacity(1)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(12.0),
+        ),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
               icon,
-              size: 32.0,
-              color: color,
+              size: 24.0,
+              color: Colors.white,
             ),
-            const SizedBox(height: 8.0),
             Text(
               value,
-              style: TextStyle(
-                fontSize: 20.0,
+              style: const TextStyle(
+                fontSize: 16.0,
                 fontWeight: FontWeight.bold,
-                color: color,
+                color: Colors.white,
               ),
             ),
-            const SizedBox(height: 4.0),
             Text(
               label,
-              style: TextStyle(
-                fontSize: 12.0,
-                color: Colors.grey[700],
+              style: const TextStyle(
+                fontSize: 11.0,
+                color: Colors.white70,
               ),
               textAlign: TextAlign.center,
             ),

@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:relieflink/login/loginscreen.dart';
-import 'package:relieflink/models/donation_campaign_card.dart';
+import 'package:relieflink/models/donation/donation_campaign_card.dart';
 import 'package:relieflink/shared_preferences.dart';
 import 'package:relieflink/widgets/donation_details.dart';
 
@@ -153,7 +153,7 @@ class _DonationScreenState extends State<DonationScreen> {
                           ),
                         ),
                       ),
-                      const Divider(),
+                      const Divider(),  
                     ],
                   );
                 }),

@@ -3,7 +3,7 @@ import 'package:relieflink/screens/awareness_screen.dart';
 import 'package:relieflink/screens/dashboard_screen.dart';
 import 'package:relieflink/screens/donation_screen.dart';
 import 'package:relieflink/screens/profile_screen.dart';
-import 'package:relieflink/screens/transparency_screen.dart';
+import 'package:relieflink/screens/volunteer_screen.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -17,7 +17,7 @@ class _HomePageState extends State<HomePage> {
   final List<Widget> _screens = [
     const DashboardScreen(),
     const DonationScreen(),
-    const TransparencyScreen(),
+    const VolunteerScreen(),
     AwarenessScreen(),
     const ProfileScreen(),
   ];
@@ -48,8 +48,8 @@ class _HomePageState extends State<HomePage> {
             label: 'Donate',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.insert_chart),
-            label: 'Impact',
+            icon: Icon(Icons.people),
+            label: 'Volunteer',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.campaign),

@@ -66,8 +66,8 @@ class _LoginScreen2State extends State<LoginScreen2> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async => false,
+    return PopScope(
+      // onWillPop: () async => false,
       child: Scaffold(
         backgroundColor:const Color(0xFF2D7DD2),
         body: Container(

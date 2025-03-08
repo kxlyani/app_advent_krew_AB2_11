@@ -1,31 +1,32 @@
-// import 'dart:convert';
-
+import 'dart:convert';
 import 'package:flutter/material.dart';
-// import 'package:http/http.dart' as http;
-
+import 'package:http/http.dart' as http;
 import 'package:razorpay_flutter/razorpay_flutter.dart';
+import 'package:relieflink/shared_preferences.dart'; // Ensure this handles universalId correctly.
 
 class CampaignDonationPage extends StatefulWidget {
   final String campaignId;
   final String merchantId;
 
-  CampaignDonationPage({required this.campaignId, required this.merchantId});
+  const CampaignDonationPage({
+    super.key,
+    required this.campaignId,
+    required this.merchantId,
+  });
 
   @override
   _CampaignDonationPageState createState() => _CampaignDonationPageState();
 }
 
 class _CampaignDonationPageState extends State<CampaignDonationPage> {
-  Razorpay _razorpay = Razorpay();
-  // Map<String, dynamic>? campaignData;
+  final _razorpay = Razorpay();
   late String campaignId;
   late String razorpayAccountId;
-  TextEditingController _amountController = TextEditingController();
+  final _amountController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-
     campaignId = widget.campaignId;
     razorpayAccountId = widget.merchantId;
 
@@ -34,71 +35,98 @@ class _CampaignDonationPageState extends State<CampaignDonationPage> {
     _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
   }
 
-  // // Fetch campaign details from Firebase RTDB
-  // void _fetchCampaignDetails() async {
+  // Fetch user ID from Firebase using email
+  Future<String?> getUserIdByEmail(String email) async {
+    final Uri url = Uri.https(
+      "relieflink-e824d-default-rtdb.firebaseio.com",
+      "users.json",
+    );
 
-  //   // // _fetchNGOMerchantID("aghoradway@gmail.com");
-  //   // final url = Uri.parse(
-  //   //     'https://relieflink-e824d-default-rtdb.firebaseio.com/campaigns.json');
-  //   // final response = await http.get(url);
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        final Map<String, dynamic>? users = json.decode(response.body);
+        if (users != null) {
+          for (var entry in users.entries) {
+            var user = entry.value;
+            if (user['email'].toString().trim().toLowerCase() ==
+                email.trim().toLowerCase()) {
+              return entry.key; // Return user ID
+            }
+          }
+        }
+      }
+    } catch (e) {
+      print("Error fetching user ID: $e");
+    }
+    return null;
+  }
 
-  //   // if (response.statusCode == 200) {
-  //   //   print("Campaign Data Response: ${response.body}"); // Debugging
+  // Add or update donation amount in Firebase
+  void _addDonation() async {
+    int donatedAmount = int.tryParse(_amountController.text) ?? 0;
+    if (donatedAmount <= 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Enter a valid donation amount")),
+      );
+      return;
+    }
 
-  //   //   final campaign = json.decode(response.body);
-  //   //   if (campaign != null && campaign.containsKey("ngoEmail")) {
-  //   //     setState(() {
-  //   //       campaignData = campaign;
-  //   //     });
-  //   //     print('found');
-  //   //     _fetchNGOMerchantID(campaignData!['ngoEmail']);
-  //   //   } else {
-  //   //     print("Error: Campaign data is null or missing `ngo_email`.");
-  //   //   }
-  //   // } else {
-  //   //   _fetchNGOMerchantID("aghoradway@gmail.com");
-  //   //   print("Error fetching campaign details: ${response.statusCode}");
-  //   }
-  // }
+    // Fetch user ID from email
+    String? userId = await getUserIdByEmail(universalId);
+    if (userId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("User not found in database.")),
+      );
+      return;
+    }
 
-  // // Fetch NGO merchant ID from Firebase RTDB
-  // void _fetchNGOMerchantID(String ngoEmail) async {
-  //   // razorpayAccountId = "Q1bmw59ctgh9Vd";
-  //   print("Fetching Merchant ID for NGO Email: $ngoEmail");
+    final updateUrl = Uri.https(
+      'relieflink-e824d-default-rtdb.firebaseio.com',
+      'users/$userId.json',
+    );
 
-  //   final url = Uri.parse(
-  //       'https://relieflink-e824d-default-rtdb.firebaseio.com/campaigns.json');
-  //   final response = await http.get(url);
+    try {
+      // Fetch current donation amount
+      final fetchResponse = await http.get(updateUrl);
+      int previousTotal = 0;
+      if (fetchResponse.statusCode == 200 && fetchResponse.body.isNotEmpty) {
+        final data = json.decode(fetchResponse.body);
+        previousTotal = data["total_donation"] ?? 0;
+      }
 
-  //   if (response.statusCode == 200) {
-  //     print("NGO Data Response: ${response.body}"); // Debugging
+      int newTotal = previousTotal + donatedAmount; // Update donation amount
 
-  //     final ngosData = json.decode(response.body) as Map<String, dynamic>?;
-  //     if (ngosData != null) {
-  //       ngosData.forEach((key, ngo) {
-  //         if (ngo["email"] == ngoEmail) {
-  //           setState(() {
-  //             razorpayAccountId = ngosData["merchantId"];
-  //           });
-  //           print("Merchant ID Found: $razorpayAccountId"); // Debugging
-  //         }
-  //       });
-  //     } else {
-  //       print("Error: NGO data is null or not formatted correctly.");
-  //     }
-  //   } else {
-  //     print("Error fetching NGO merchant ID: ${response.statusCode}");
-  //   }
-  // }
+      final updateResponse = await http.patch(
+        updateUrl,
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({"total_donation": newTotal}),
+      );
 
-  // Initiate payment
+      if (updateResponse.statusCode == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Text("Payment Successful, Total Donated: ₹$newTotal")),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Failed to update donation record.")),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error: $e")),
+      );
+    }
+  }
+
+  // Initiate Razorpay payment
   void _makeDonation() {
     if (_amountController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
             content: Text("Enter an amount and ensure details are loaded")),
       );
-      print("Error: campaignData is null or amount is empty.");
       return;
     }
 
@@ -117,34 +145,31 @@ class _CampaignDonationPageState extends State<CampaignDonationPage> {
       "amount": amount,
       "currency": "INR",
       "name": "Donation to $campaignId",
-      "description":  "",
+      "description": "",
       "prefill": {"contact": "9876543210", "email": "donor@example.com"},
       "theme": {"color": "#3399cc"},
-      "account": razorpayAccountId, // Merchant ID
+      "account": razorpayAccountId,
     };
 
-    print("Opening Razorpay Payment with options: $options"); // Debugging
     _razorpay.open(options);
   }
 
   // Razorpay Handlers
   void _handlePaymentSuccess(PaymentSuccessResponse response) {
-    print("Payment Successful: ${response.paymentId}");
+    _addDonation();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text("Payment Successful: ${response.paymentId}")),
     );
   }
 
   void _handlePaymentError(PaymentFailureResponse response) {
-    print(
-        "Payment Failed: Code ${response.code}, Message: ${response.message}");
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text("Payment Failed: ${response.message}")),
     );
   }
 
   void _handleExternalWallet(ExternalWalletResponse response) {
-    print("External Wallet Selected: ${response.walletName}");
+    _addDonation();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
           content: Text("External Wallet Selected: ${response.walletName}")),
@@ -171,16 +196,6 @@ class _CampaignDonationPageState extends State<CampaignDonationPage> {
               campaignId,
               style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
-            // SizedBox(height: 10),
-            // Text(
-            //   campaignData?["description"] ?? "No description available",
-            //   style: TextStyle(fontSize: 16),
-            // ),
-            // SizedBox(height: 20),
-            // Text(
-            //   "Goal: ₹${campaignData?["goal_amount"] ?? "N/A"}",
-            //   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            // ),
             SizedBox(height: 20),
             TextField(
               controller: _amountController,
